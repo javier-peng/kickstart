@@ -1,0 +1,45 @@
+#include<iostream>
+#include<vector>
+#include<math.h>
+#include<algorithm>
+using namespace std;
+const int MAX = 1e4 * 5 + 10;
+int main() {
+	int T;
+	cin >> T;
+	for (int i=1;i<=T;i++)
+	{
+		int N;
+		cin >> N;
+		int K;
+		cin >> K;
+		vector<int> vec(N, 0);
+		long long sum = 0;
+		for (int j=0;j<N;j++)
+		{
+			int temp;
+			cin >> temp;
+			vec[j] = temp;
+			sum += vec[j];
+		}
+		double dp[MAX] = { 0.000000 };
+		dp[0] = (double)sum / N;
+		for (int k=1;k<=K;k++)
+		{
+			for (int j=0;j<N;j++)
+			{
+				double del = dp[k - 1] - vec[j];
+				if (del<=0.000000)
+				{
+					dp[k] += ((double)vec[j]) / N;
+				}
+				else {
+					dp[k] += (dp[k - 1])/N;
+				}
+			}
+		}
+		printf("Case #%d: %f\n", i, dp[K]);
+		//cout << "Case #" << i << ": " << dp[K] << endl;
+	}
+	return 0;
+}
