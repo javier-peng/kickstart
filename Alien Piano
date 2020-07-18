@@ -1,0 +1,59 @@
+#include<iostream>
+#include<vector>
+#include<math.h>
+#include<algorithm>
+using namespace std;
+const int MAX = 1e4+10;
+int dp[MAX][4];
+int Piano(vector<long long> vec) {
+	int n = vec.size();
+	for (int i = 0; i < 4; i++)
+	{
+		dp[0][i] = 0;
+	}
+	for (int i = 1; i < n; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			dp[i][j] = n << 1;
+			for (int k = 0; k < 4; k++)
+			{
+				dp[i][j] = min(dp[i][j], dp[i - 1][k] + 1);
+				if (vec[i] > vec[i - 1] && j > k)
+				{
+					dp[i][j] = min(dp[i][j], dp[i - 1][k]);
+				}
+				if (vec[i] < vec[i - 1] && j < k)
+				{
+					dp[i][j] = min(dp[i][j], dp[i - 1][k]);
+				}
+				if (vec[i] == vec[i - 1] && j == k)
+				{
+					dp[i][j] = min(dp[i][j], dp[i - 1][k]);
+				}
+			}
+		}
+	}
+	int ans = dp[n - 1][0];
+	for (int j = 1; j < 4; j++)
+	{
+		ans = min(ans, dp[n - 1][j]);
+	}
+	return ans;
+}
+int main() {
+	int T;
+	cin >> T;
+	for (int i = 1; i <= T; i++) {
+		int K;
+		cin >> K;
+		vector<long long> vec(K, 0);
+		for (int j = 0; j < K; j++) {
+			long long temp;
+			cin >> temp;
+			vec[j] = temp;
+		}
+		int result = Piano(vec);
+		cout << "Case #" <<i<< ": " << result << endl;
+	}
+}
