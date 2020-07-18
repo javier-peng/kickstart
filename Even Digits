@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include<algorithm>
+using namespace std;
+
+
+vector<int> NumToVector(long long N) {
+	vector<int> res;
+	while (N) {
+		res.emplace_back(N % 10);
+		N /= 10;
+	}
+	return res;
+}
+long long GetMinusNum(vector<int> & vec) {
+	long long ans = 0;
+	for (int i = vec.size() - 1; i >= 0; i--)
+	{
+		if (vec[i] % 2 == 1) {
+			vec[i]--;
+			for (int j = i - 1; j >= 0; j--)
+			{
+				vec[j] = 8;
+			}
+			break;
+		}
+	}
+	for (int i = vec.size() - 1; i >= 0; i--) {
+		ans = ans * 10 + vec[i];
+	}
+	return ans;
+}
+
+long long GetPlusNum(vector<int> & vec) {
+	long long ans = 0;
+	for (int i = vec.size() - 1; i >= 0; i--)
+	{
+		if (vec[i] % 2 == 1)
+		{
+			if (vec[i] == 9) {
+				return -1;
+			}
+			else {
+				vec[i]++;
+				for (int j = i - 1; j >= 0; j--) {
+					vec[j] = 0;
+				}
+			}
+			break;
+		}
+	}
+	for (int i = vec.size() - 1; i >= 0; i--) {
+		ans = ans * 10 + vec[i];
+	}
+	return ans;
+}
+
+
+
+int main() {
+	long long T = 0, i = 1;
+	cin >> T;
+	while (i <= T) {
+		long long N = 0;
+		cin >> N;
+		vector<int> vec1 = NumToVector(N);
+		vector<int> vec2 = NumToVector(N);
+		long long minus_num = GetMinusNum(vec1);
+		long long plus_num = GetPlusNum(vec2);
+		if (-1 == plus_num) {
+			cout << "Case #" << i << ": " << N - minus_num << endl;
+		}
+		else {
+			long long res = min(N - minus_num, plus_num - N);
+			cout << "Case #" << i << ": " << res << endl;
+		}
+		++i;
+	}
+	return 0;
+}
