@@ -1,0 +1,45 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<cmath>
+using namespace std;
+
+int main() {
+	int T;
+	cin >> T;
+	for (int i = 0; i < T; i++) {
+		long long N;
+		cin >> N;
+		vector<long long> vec(N, 0);
+		long long result = 0;
+		for (long long j = 0; j < N; j++) {
+			long long tmp;
+			cin >> tmp;
+			vec[j]=tmp;
+		}
+		if (N == 1) {
+			result = 1;
+			cout << "Case #" << i + 1 << ": " << result << endl;
+		}
+		else {			
+			if (vec[0] > vec[1])
+			{
+				result++;				
+			}
+			long long max = vec[0];
+			for (long long j = 1; j < N - 1; j++) {
+				if (vec[j] > max) {
+					max = vec[j];
+					if (vec[j] > vec[j + 1]) {
+						result++;
+					}
+				}
+			}
+			if (vec[N - 1] > max) {
+				result++;
+			}
+			cout << "Case #" << i + 1 << ": " << result << endl;
+		}					
+	}	
+	return 0;
+}
