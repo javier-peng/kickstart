@@ -1,0 +1,59 @@
+#include<iostream>
+#include<vector>
+#include<math.h>
+#include<algorithm>
+using namespace std;
+long long countNum(long long N);
+vector<int> numTovector(long long num) {
+	vector<int> vec;
+	while (num)
+	{
+		vec.emplace_back(num % 10);
+		num = num / 10;
+	}
+	return vec;
+}
+
+long long solve(long long F, long long L) {
+	return countNum(L)-countNum(F)+1;
+}
+
+long long countNum(long long N) {
+	vector<int> vec = numTovector(N);
+	int n = vec.size();
+	long long res = 0;
+	
+	//从高位到低位遍历
+	for (int i=n-1;i>0;i--)
+	{
+		long long tmp = 1;
+		for (int j=i-1;j>0;j--)
+		{
+			tmp = tmp * 9;
+		}
+		res+= vec[i] * tmp * 8;
+	}
+	
+	//遍历个位数
+	for (long long i=N-N%10;i<=N;i++)
+	{
+		if (i%9>0 && i%10<9)
+		{
+			res++;
+		}
+	}
+	return res;
+}
+
+int main() {
+	int T;
+	cin >> T;
+	for (int i=1;i<=T;i++)
+	{
+		long long F, L;
+		cin >> F >> L;
+		long long res = solve(F, L);
+		printf("Case #%d: %lld\n", i, res);
+		//cout << "Case #" << i << ": " << res << endl;
+	}
+}
