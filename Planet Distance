@@ -1,0 +1,122 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<stack>
+#define MAX_N  1001
+using namespace std;
+
+int main() {
+	int T;
+	cin >> T;
+	for (int i=1;i<=T;i++)
+	{
+		int N;
+		cin >> N;
+		vector<int> G[MAX_N];
+
+		//通过邻接表构造图
+		for (int j=0;j<N;j++)
+		{
+			int x, y;
+			cin >> x >> y;
+			G[x].push_back(y);
+			G[y].push_back(x);
+		}
+		queue<int> q;
+		stack<int> stk;
+
+		//存储每个节点的度数，将度数为1的节点压入队列
+		vector<int> degree(N + 1);
+		for (int j=1;j<=N;j++)
+		{
+			degree[j] = G[j].size();
+			if (G[j].size()==1)
+			{
+				q.push(j);
+			}
+		}
+
+		vector<int> dis(N + 1);//存储距离
+
+		//拓扑排序，逐一删除度为1的节点,将新的度为1的点放入队列，最后没有度为1的节点，剩下的节点构成一个环
+		while (!q.empty())
+		{
+			int node = q.front();
+			q.pop();
+			dis[node] = -1;
+			for (int j=0;j<G[node].size();j++)
+			{
+				int v = G[node][j];
+				degree[v]--;
+				if (degree[v]==1)
+				{
+					q.push(v);
+				}
+			}
+		}
+
+		//将环中的节点放入队列
+		for (int j=1;j<=N;j++)
+		{
+			if (dis[j]==0)
+			{
+				q.push(j);
+			}
+		}
+
+		for (int j=1;j<=N;j++)
+		{
+			if (dis[j]==0)
+			{
+				stk.push(j);
+			}
+		}
+
+        //DFS
+		while (!stk.empty())
+		{
+			int node = stk.top();
+			bool flag = false;
+			for (int k=0;k<G[node].size();k++)
+			{
+				if (dis[G[node][k]]==-1)
+				{
+					stk.push(G[node][k]);
+					dis[G[node][k]] = dis[node] + 1;
+					flag = true;
+					break;
+				}
+			}
+			if (flag==false)
+			{
+				stk.pop();
+			}
+		}
+    
+		//BFS
+		while (!q.empty())
+		{
+			int node = q.front();
+			q.pop();
+			for (int j=0;j<G[node].size();j++)
+			{
+				int v = G[node][j];
+				if (dis[v]==-1)
+				{
+					dis[v] = dis[node] + 1;
+					q.push(v);
+				}
+			}
+		}
+
+
+		cout << "Case #" << i << ": ";
+		for (int j=1;j<=N;j++)
+		{
+			cout << dis[j] << " ";
+		}
+		cout << endl;
+	}
+	return 0;
+}
+
