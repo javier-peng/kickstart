@@ -1,0 +1,75 @@
+#include<iostream>
+#include<vector>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+#define MAX_N 1000000
+const long long MOD = 1000000007;
+
+//快速幂+取模：控制数的大小
+long long fast_pow(long long x, long long n) {
+	if (n==0)
+	{
+		return 1;
+	}
+	long long ans = fast_pow(x, n / 2);
+	if (n%2==0)
+	{
+		return (ans*ans) % MOD;
+	}
+	return (((ans*ans) % MOD)*(x%MOD)) % MOD;
+}
+
+//等比数列求和+取模
+long long AddSum(long long i, long long k) {
+	long long addSum = 0;
+	addSum = i * (fast_pow(i, k) - 1) % MOD*fast_pow(i - 1, MOD - 2) % MOD;
+	return addSum;
+}
+
+
+int main() {
+	int T;
+	cin >> T;
+	for (int i = 1; i <= T; i++) {
+		long long SUM = 0;
+		vector<long long> X(MAX_N+2,0);
+		vector<long long> Y(MAX_N + 2, 0);
+		vector<long long> A(MAX_N + 2, 0);
+		long long  N, K, x1, y1, C, D, E1, E2,F;
+		cin >> N >> K >> x1 >> y1 >> C >> D >> E1 >> E2>>F;
+		X[1] = x1;
+		Y[1] = y1;
+		A[1] = (X[1] + Y[1]) % F;
+		for (int j=2;j<=N;j++)
+		{
+			long long tmp1 = (X[j - 1] * C + Y[j - 1] * D + E1) % F;
+			long long tmp2 = (X[j - 1] * D + Y[j - 1] * C + E2) % F;
+			X[j] = tmp1;
+			Y[j] = tmp2;
+			A[j] = (X[j] + Y[j]) % F;
+		}
+		vector<long long> POWER(MAX_N+2,0);
+		long long TempSum=0;
+		for (int j=1;j<=N;j++)//A
+		{
+			if (j==1)
+			{
+				TempSum += K;
+			}
+			else {
+				TempSum += AddSum(j, K);
+			}
+			TempSum %= MOD;
+			long long tmp = TempSum * (N - j + 1) % MOD;
+			POWER[j] = tmp*A[j]%MOD;
+		}
+		for (int j=1;j<=N;j++)
+		{
+			SUM += POWER[j];
+			SUM %= MOD;
+		}
+		cout << "Case #" << i << ": " << SUM << endl;
+	}
+	
+}
