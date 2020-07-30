@@ -1,0 +1,84 @@
+#include<iostream>
+#include<math.h>
+#include<algorithm>
+#include<vector>
+#include<set>
+using namespace std;
+const long long INF = 1e17;
+
+int main() {
+	int T;
+	cin >> T;
+	for (int iCase = 1; iCase <= T; iCase++) {
+		long long N, O, D;
+		cin >> N >> O >> D;
+		long long x1, x2, A, B, C, M, L;
+		cin >> x1 >> x2 >> A >> B >> C >> M >> L;
+		vector<long long> X(N + 1, 0);
+		vector<long long> S(N + 1, 0);
+		X[1] = x1;
+		X[2] = x2;
+		for (int i = 3; i <= N; i++) {
+			X[i] = (A*X[i - 1] + B * X[i - 2] + C) % M;
+		}
+		for (int i = 1; i <= N; i++) {
+			S[i] = X[i] + L;
+		}
+
+		//求前i个元素的和
+		vector<long long> SUM(N + 1, 0);
+		SUM[0] = 0;
+		for (int i = 1; i <= N; i++)
+		{
+			SUM[i] = SUM[i - 1] + S[i];
+		}
+
+        //定义左、右两个指针
+		long long l = 1, r = 1, odd = 0;
+		multiset<long long> mst;//保证log（n）的复杂度
+		long long ans = -INF;
+		for (; l <= N; l++)
+		{
+			r = max(l, r);
+			while (r <= N)
+			{
+				if (S[r] % 2 == 0)
+				{
+					mst.insert(SUM[r]);
+				}
+				else {
+					if (odd < O)
+					{
+						mst.insert(SUM[r]);
+						odd++;
+					}
+					else {
+						break;
+					}
+				}
+				r++;
+			}
+			multiset<long long>::iterator it = mst.upper_bound(D + SUM[l - 1]);
+			if (it != mst.begin()) {
+				it--;
+				ans = max(*it - SUM[l - 1], ans);
+			}
+			if (l < r)
+			{
+				if (S[l] % 2 != 0)
+				{
+					odd--;
+				}
+				mst.erase(mst.find(SUM[l]));
+			}
+		}
+		if (ans == -INF)
+		{
+			cout << "Case #" << iCase << ": IMPOSSIBLE" << endl;
+		}
+		else {
+			cout << "Case #" << iCase << ": " << ans << endl;
+		}
+	}
+	return 0;
+}
