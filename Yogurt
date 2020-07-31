@@ -1,0 +1,51 @@
+#include<iostream>
+#include<cmath>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+void setnum(int l, int r, vector<long long> &vec) {
+	for (int i=l;i<=r;i++)
+	{
+		if (vec[i]>0)
+		{
+			vec[i]--;
+		}
+	}
+}
+
+int main() {
+	int T;
+	cin >> T;
+	for (int iCase = 1; iCase <= T; iCase++) {
+		int N, K;
+		cin >> N >> K;
+		int result = N;
+		vector<long long> A(N + 1, 0);
+		for (int i = 1; i <= N; i++) {
+			scanf("%lld", &A[i]);
+		}
+		sort(A.begin(), A.end());
+		int l = 1, r = 1;
+		for (int i = 1; i <= N;)
+		{
+			int num = 1;
+			while (num<=K && i<=N)
+			{
+				if (A[i] > 0)
+				{
+					num++;
+					A[i] = -1;
+				}
+				if (A[i] == 0)
+				{
+					result--;			
+				}
+				i++;
+			}
+			setnum(i, N, A);
+		}
+		cout << "Case #" << iCase << ": " << result << endl;
+	}
+	return 0;
+}
