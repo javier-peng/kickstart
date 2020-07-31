@@ -1,0 +1,81 @@
+#include<iostream>
+#include<vector>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int main() {
+	int T;
+	cin >> T;
+	for (int iCase=1;iCase<=T;iCase++)
+	{
+		long long result = 0;
+		long long N, K;
+		cin >> N >> K;
+		
+		long long p1, p2, A1, B1, C1, M1;
+		long long h1, h2, A2, B2, C2, M2;
+		long long x1, x2, A3, B3, C3, M3;
+		long long y1, y2, A4, B4, C4, M4;
+
+		cin >> p1 >> p2 >> A1 >> B1 >> C1 >> M1;
+		cin >> h1 >> h2 >> A2 >> B2 >> C2 >> M2;
+		cin >> x1 >> x2 >> A3 >> B3 >> C3 >> M3;
+		cin >> y1 >> y2 >> A4 >> B4 >> C4 >> M4;
+
+		vector<long long> P(N + 1, 0);
+		vector<long long> H(N + 1, 0);
+		vector<long long> X(K + 1, 0);
+		vector<long long> Y(K + 1, 0);
+
+		P[1] = p1;
+		P[2] = p2;
+		H[1] = h1;
+		H[2] = h2;
+		X[1] = x1;
+		X[2] = x2;
+		Y[1] = y1;
+		Y[2] = y2;
+		for (long long i = 3; i <= N; i++)
+		{
+			P[i] = (A1*P[i - 1] + B1 * P[i - 2] + C1) % M1 + 1;
+			H[i] = (A2*H[i - 1] + B2 * H[i - 2] + C2) % M2 + 1;
+		}
+		for (long long i = 3; i <= K; i++)
+		{
+			X[i] = (A3*X[i - 1] + B3 * X[i - 2] + C3) % M3 + 1;
+			Y[i] = (A4*Y[i - 1] + B4 * Y[i - 2] + C4) % M4 + 1;
+		}
+		
+		vector<pair<long long, long long>> vec1;
+		vector<pair<long long, long long>> vec2;
+		for (int i=1;i<=N;i++)
+		{
+			vec1.emplace_back(make_pair(P[i] + H[i], H[i] - P[i]));
+		}
+		for (int i=1;i<=K;i++)
+		{
+			vec2.emplace_back(make_pair(X[i] + Y[i], Y[i] - X[i]));
+		}
+		sort(vec1.begin(), vec1.end());
+		reverse(vec1.begin(), vec1.end());
+		sort(vec2.begin(), vec2.end());
+		reverse(vec2.begin(), vec2.end());
+		int id = 0;
+		int maxY = -0x3f3f3f3f;
+		for (int i=0;i<K;i++)
+		{
+			while (id<N && vec1[id].first>=vec2[i].first)
+			{
+				maxY = maxY > vec1[id].second ? maxY : vec1[id].second;
+				id++;
+			}
+			if (vec2[i].second<=maxY)
+			{
+				result++;
+			}
+		}
+
+		cout << "Case #" << iCase << ": " << result << endl;
+	}
+	return 0;
+}
