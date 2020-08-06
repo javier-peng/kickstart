@@ -1,0 +1,47 @@
+//O(logL*L^2)
+
+#include<iostream>
+#include<cstring>
+#include<string>
+#include<vector>
+#include<math.h>
+#include<algorithm>
+#include<set>
+#include<unordered_set>
+
+using namespace std;
+int main() {
+	int T;
+	cin >> T;
+	for (int iCase=1;iCase<=T;iCase++)
+	{
+		int result = 0;
+		int L;
+		cin >> L;
+		string A, B;
+		cin >> A >> B;
+		multiset<string> subA;
+		multiset<string> subB;
+		for (int i = 0; i < L; i++)
+		{
+			for (int j = 1; j <= L - i; j++)
+			{
+				string str1 = A.substr(i, j);
+				string str2 = B.substr(i, j);
+				sort(str1.begin(), str1.end());
+				sort(str2.begin(), str2.end());
+				subA.insert(str1);
+				subB.insert(str2);
+			}
+		}
+		for (auto it=subA.begin();it!=subA.end();it++)
+		{
+			if (subB.find(*it)!=subB.end())
+			{
+				result++;
+			}
+		}
+		cout << "Case #" << iCase << ": " << result << endl;
+	}
+	return 0;
+}
