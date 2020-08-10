@@ -1,0 +1,110 @@
+考点：DFS+连通分量的个数
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<unordered_set>
+#include<cmath>
+#define MAX_V 51
+using namespace std;
+
+long long powInt(int x,int y){
+    if(y==0){
+        return 1;
+    }
+    if(y%2==0){
+        return (powInt(x,y/2)*powInt(x,y/2));
+    }
+    if(y%2==1){
+        return (powInt(x,y/2)*powInt(x,y/2)*x);
+    }
+}
+
+//边
+struct Edge {
+	int to = -1;//目的节点编号
+	int length = -1;//连接边的长度
+};
+
+//保证x到y之间的距离最小（不断更新）
+void Update(int l, int x, int y, Edge edges[]) {
+	if (edges[x].to==-1)
+	{
+		edges[x].to = y;
+		edges[x].length = l;
+	}
+	else {
+		if (edges[x].length>l)
+		{
+			edges[x].to = y;
+			edges[x].length = l;
+		}
+	}
+}
+
+//dfs G是二维矩阵
+void dfs(int v, const vector<vector<int> >& G, vector<int>& visited) {
+	if (visited[v])
+	{
+		return;
+	}
+	visited[v] = 1;
+	for (int i=0;i<G[v].size();i++)
+	{
+		dfs(G[v][i], G, visited);
+	}
+}
+
+int main() {
+	int T;
+	cin >> T;
+	for (int iCase = 1; iCase <= T; iCase++) {
+		int V, E;
+		cin >> V >> E;
+		Edge edges[MAX_V];//存储边的数组，下标为出发节点，边结点本身里面包含到达节点和边的长度
+		unordered_set<int> zeros;
+		//得出每两个节点的最短距离
+		for (int i=0;i<E;i++)
+		{
+			int x, y, l;
+			cin >> x >> y >> l;
+			Update(l, x, y, edges);//寻找最近的邻居结点
+			Update(l, y, x, edges);//道路是双向的
+			if (l == 0) {
+				zeros.insert(x);
+				zeros.insert(y);//记录距离为0的两个节点编号
+			}
+		}
+		vector<vector<int> > G(MAX_V, vector<int>());
+		
+		//构造子图，根据之前筛选出来的最短距离边
+		for (int i=1;i<=V;i++)
+		{
+			G[i].push_back(edges[i].to);
+			G[edges[i].to].push_back(i);//道路是双向的
+		}
+		
+		//用dfs的方法来算出连通分量的个数
+		int count = 0;
+		vector<int> visited(V + 1);
+		for (int i=1;i<=V;i++)
+		{
+			if (!visited[i])
+			{
+				dfs(i, G, visited);
+				count++;
+			}
+		}
+
+		//计算两个节点距离为0 的情况
+		for (int i=1;i<=V;i++)
+		{
+			if (zeros.find(edges[i].to)!=zeros.end())
+			{
+				count++;
+			}
+		}
+		count -= zeros.size();//排除重复情况
+		cout << "Case #" << iCase << ": " << powInt(2,count) << endl;
+	}
+}
