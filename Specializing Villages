@@ -105,6 +105,8 @@ int main() {
 			}
 		}
 		count -= zeros.size();//排除重复情况
+		
+		//结果为2的count次方
 		cout << "Case #" << iCase << ": " << powInt(2,count) << endl;
 	}
 }
