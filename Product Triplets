@@ -1,0 +1,60 @@
+#include<iostream>
+#include<cmath>
+#include<algorithm>
+#include<vector>
+#include<unordered_set>
+#include<unordered_map>
+#include<map>
+using namespace std;
+
+typedef long long lld;
+map<int, int> counter;
+int n;
+
+int main() {
+	int T;
+	cin >> T;
+	for (int iCase=1;iCase<=T;iCase++)
+	{
+		cin >> n;
+		counter.clear();
+		for (int i=0;i<n;i++)
+		{
+			int tmp;
+			cin >> tmp;
+			counter[tmp]++;
+		}
+		lld ans = 0;
+		for (auto &key:counter)
+		{
+			if (key.first<=1)//排除乘积为1/0的情况
+			{
+				continue;
+			}
+
+			//乘积大于1的情况：a、b均不为1,进行因式分解
+			int up = sqrt(key.first);
+			for (int a=2;a<=up;++a)//
+			{
+				if (key.first%a==0)//因式分解成功
+				{
+					int b = key.first / a;
+					if (a!=b)
+					{
+						ans += (lld)key.second*counter[a] * counter[b];
+					}
+					else {//a=b的情况
+						ans += (lld)key.second*counter[a] * (counter[a] - 1) / 2;
+					}
+				}
+			}
+			
+			//乘积大于1的情况:a、b其中有一个为1
+			ans += (lld)counter[1] * key.second*(key.second - 1) / 2;//因式中含有一个1
+		}
+		int zeros = counter[0], ones = counter[1];
+		ans += (lld)zeros*(zeros - 1)*(zeros - 2) / 6 + (lld)zeros*(zeros - 1) / 2 * (n - zeros);//乘积为0的情况：三个0的情况+两个0的情况
+		ans += (lld)ones*(ones - 1)*(ones - 2) / 6;//乘积为1的情况：只有三个1
+		cout << "Case #" << iCase << ": " << ans << endl;
+	}
+}
