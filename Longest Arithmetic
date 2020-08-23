@@ -1,0 +1,42 @@
+#include<iostream>
+#include<vector>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+int main() {
+	int T;
+	cin >> T;
+	for (int iCase = 1; iCase <= T; iCase++) {
+		int N;
+		cin >> N;
+		vector<long long> vec(N, 0);
+		for (int i = 0; i < N; i++) {
+			long long tmp;
+			cin >> tmp;
+			vec[i] = tmp;
+		}
+		vector<long long> dec(N, 0);
+		for (int i = 0; i < N - 1; i++) {
+			dec[i] = vec[i + 1] - vec[i];
+		}
+		vector<int> result;
+		int maxL = 2;
+		for (int i=0;i<N-1;)
+		{
+			int tmp = 1;
+			while (i + tmp < N - 1 && dec[i] == dec[i + tmp])
+			{
+				tmp++;
+			}
+			result.emplace_back(maxL + tmp-1);
+			i = i + tmp;
+		}  
+		for (int i = 0; i < result.size(); i++) {
+			if (result[i] > maxL)
+			{
+				maxL = result[i];
+			}
+		}
+		cout << "Case #" << iCase << ": " << maxL << endl;
+	}
+}vvv
